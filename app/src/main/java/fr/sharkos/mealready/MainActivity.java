@@ -6,7 +6,6 @@ import static android.content.ContentValues.TAG;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -38,7 +37,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getPlat() {
-        TextView textView3 = (TextView) findViewById(R.id.textView3);
+
+        TextView listViewTitle = (TextView) findViewById(R.id.listViewTitle);
+        listViewTitle.setText("Quel plat vous fait rêver ?\n\n");
+
+        TextView listView = (TextView) findViewById(R.id.listView);
+
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
@@ -63,7 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
                                 // Initiatialiser mon TextView
                                 Log.i(TAG, "nom du plat = "+plat.getNom());
-                                textView3.setText(plat.getNom());
+                                listView.append(plat.getNom()+
+                                        "\n\n"+ plat.getDescription()+
+                                        "\n\n Nombre de plats disponibles : " +plat.getNbPlat()+
+                                        "\n\n Prix unitaire : " +plat.getPrixUnitaire()+" € \n\n\n"
+                                );
 
                             }
                             Log.i(TAG, "taille de la response = "+platList.size());
@@ -76,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //textView3.setText("That didn't work!");
+                //listView.setText("That didn't work!");
                 Log.e("api", "error response : "+ error.getLocalizedMessage());
             }
         });
