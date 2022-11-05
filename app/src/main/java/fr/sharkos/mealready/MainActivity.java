@@ -3,9 +3,14 @@ package fr.sharkos.mealready;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static android.content.ContentValues.TAG;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,73 +28,22 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String URL = "https://mealready.herokuapp.com/plats";
-    private List<Plat> platList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        platList = new ArrayList<>();
+        Button clickToEat = findViewById(R.id.clickToEat);
 
-        this.getPlat();
-    }
-
-    public void getPlat() {
-
-        TextView listViewTitle = (TextView) findViewById(R.id.listViewTitle);
-        listViewTitle.setText("Quel plat vous fait rêver ?\n\n");
-
-        TextView listView = (TextView) findViewById(R.id.listView);
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONArray array = new JSONArray(response);
-                            for (int i=0;i < array.length();i++) {
-                                JSONObject object = array.getJSONObject(i);
-
-                                Plat plat = new Plat(
-                                        object.getInt("id"),
-                                        object.getString("nom"),
-                                        object.getString("description"),
-                                        object.getDouble("prixUnitaire"),
-                                        object.getInt("nbPlat"),
-                                        object.getString("photo")
-                                );
-
-                                platList.add(plat);
-
-                                // Initiatialiser mon TextView
-                                Log.i(TAG, "nom du plat = "+plat.getNom());
-                                listView.append(plat.getNom()+
-                                        "\n\n"+ plat.getDescription()+
-                                        "\n\n Nombre de plats disponibles : " +plat.getNbPlat()+
-                                        "\n\n Prix unitaire : " +plat.getPrixUnitaire()+" € \n\n\n"
-                                );
-
-                            }
-                            Log.i(TAG, "taille de la response = "+platList.size());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "Error Response = "+e.getMessage());
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
+        clickToEat.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                //listView.setText("That didn't work!");
-                Log.e("api", "error response : "+ error.getLocalizedMessage());
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Manger ! \uD83D\uDE0B", Toast.LENGTH_SHORT).show();
+                Intent listPlatIntent = new Intent(MainActivity.this, ListPlatActivity.class);
+                startActivity(listPlatIntent);
             }
         });
-
-        queue.add(stringRequest);
     }
+
 
 }

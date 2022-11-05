@@ -3,28 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textToClickView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="Cliquer sur ce bouton pour assouvir votre faim"
+            android:textAlignment="center"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/listViewTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/clickToEat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Manger ! 😋" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/listView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-    </ScrollView>
-
+    <TextView
+        android:id="@+id/mainTitleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="197dp"
+        android:layout_marginBottom="88dp"
+        android:text="Bienvenue sur MealReady"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
