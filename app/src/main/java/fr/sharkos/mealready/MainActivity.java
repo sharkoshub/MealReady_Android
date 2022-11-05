@@ -8,63 +8,80 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    static final String URL = "https://mealready.herokuapp.com";
-
-    TextView textView3;
+    private static final String URL = "https://mealready.herokuapp.com/plats";
+    private List<Plat> platList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView3 = findViewById(R.id.textView3);
-        //textView2.setText(this.getPlat());
+        platList = new ArrayList<>();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        this.getPlat();
+    }
 
-        ApiPlat apiPlat = retrofit.create(ApiPlat.class);
+    public void getPlat() {
+        TextView textView3 = (TextView) findViewById(R.id.textView3);
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-        //Call<Plat> call = apiPlat.getPlats();
-        /*
-        call.enqueue(new Callback<Plat>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray array = new JSONArray(response);
+                            for (int i=0;i < array.length();i++) {
+                                JSONObject object = array.getJSONObject(i);
+
+                                Plat plat = new Plat(
+                                        object.getInt("id"),
+                                        object.getString("nom"),
+                                        object.getString("description"),
+                                        object.getDouble("prixUnitaire"),
+                                        object.getInt("nbPlat"),
+                                        object.getString("photo")
+                                );
+
+                                platList.add(plat);
+
+                                // Initiatialiser mon TextView
+                                Log.i(TAG, "nom du plat = "+plat.getNom());
+                                textView3.setText(plat.getNom());
+
+                            }
+                            Log.i(TAG, "taille de la response = "+platList.size());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "Error Response = "+e.getMessage());
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
             @Override
-            public void onResponse(Call<Plat> call, retrofit2.Response<Plat> response) {
-
-                String nomPlat = response.body().getNom();
-                textView2.append(nomPlat);
-            }
-
-            @Override
-            public void onFailure(Call<Plat> call, Throwable t) {
-                Log.e("Fail mon pote",t.toString());
-            }
-        });*/
-
-        apiPlat.getPlat().enqueue(new Callback<Plat>() {
-            @Override
-            public void onResponse(Call<Plat> call, Response<Plat> response) {
-                String nomPlat = response.body().getNom();
-                textView3.setText(nomPlat);
-            }
-
-            @Override
-            public void onFailure(Call<Plat> call, Throwable t) {
-                Log.e(TAG, t.toString());
-                textView3.setText("Fail !!!");
+            public void onErrorResponse(VolleyError error) {
+                //textView3.setText("That didn't work!");
+                Log.e("api", "error response : "+ error.getLocalizedMessage());
             }
         });
+
+        queue.add(stringRequest);
     }
 
 }

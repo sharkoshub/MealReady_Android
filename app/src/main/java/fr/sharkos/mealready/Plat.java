@@ -9,6 +9,15 @@ public class Plat {
     private int nbPlat;
     private String photo;
 
+    public Plat(long id, String nom, String description, double prixUnitaire, int nbPlat, String photo) {
+        this.id = id;
+        this.nom = nom;
+        this.description = description;
+        this.prixUnitaire = prixUnitaire;
+        this.nbPlat = nbPlat;
+        this.photo = photo;
+    }
+
     public long getId() {
         return id;
     }
